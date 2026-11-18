@@ -249,17 +249,17 @@
     $("now").classList.toggle("hidden", !ci);
     $("empty").classList.toggle("hidden", !!ci || rest.length > 0);
     if (ci) {
-      // No singer name (e.g. the Elvis tracks)? Lead with the song title instead.
-      $("nowName").textContent = ci.singer || ci.title;
-      $("nowSong").textContent = ci.singer ? (ci.title + "  ·  " + ci.artist) : ci.artist;
+      // No singer name (e.g. the Elvis tracks)? The artist takes the big slot.
+      $("nowName").textContent = ci.singer || ci.artist || ci.title;
+      $("nowSong").textContent = ci.singer ? (ci.title + "  ·  " + ci.artist) : ci.title;
     }
 
     $("nextWrap").classList.toggle("hidden", rest.length === 0);
     var html = "";
     rest.slice(0, MAX_ROWS).forEach(function (it, i) {
       var x = info(it);
-      var who = x.singer || x.title;
-      var what = x.singer ? (x.title + "  ·  " + x.artist) : x.artist;
+      var who = x.singer || x.artist || x.title;
+      var what = x.singer ? (x.title + "  ·  " + x.artist) : x.title;
       html += '<div class="row' + (i === 0 ? " first" : "") + '"><span class="num">' + (i + 1) +
         '</span><span class="who">' + esc(who) + '</span><span class="what">' + esc(what) + "</span></div>";
     });

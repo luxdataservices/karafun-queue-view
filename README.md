@@ -2,7 +2,7 @@
 
 A full-screen "Now singing / Up next" display for a KaraFun karaoke queue, built for a TV (tested for Fire TV's Silk browser).
 
-It's a single static page (`index.html`) with no build step and no server. It connects to KaraFun's remote-control session as a read-only listener and mirrors the queue live. When KaraFun moves on to the next song, the display follows. Songs without a singer name show the song title instead.
+It's a single static page (`index.html`) with no build step and no server. It connects to KaraFun's remote-control session as a read-only listener and mirrors the queue live. When KaraFun moves on to the next song, the display follows. Songs without a singer name show the artist in the big slot instead.
 
 ## Use
 
@@ -13,7 +13,7 @@ It's a single static page (`index.html`) with no build step and no server. It co
 URL options:
 - `?code=123456` sets and saves the code (handy as a bookmark on the TV)
 - `?reset` forgets the saved code
-- `?blank=Default Name` treats that singer name as "no singer", so those songs show the song title instead. Use this for the name KaraFun fills in when nobody types one. Separate several names with commas. Saved on the device.
+- `?blank=Default Name` treats that singer name as "no singer", so those songs show the artist instead. Use this for the name KaraFun fills in when nobody types one. Separate several names with commas. Saved on the device.
 
 Fire TV tip: set **Settings → Display & Sounds → Screensaver → Start Time → Never** so the screensaver doesn't cover the queue.
 
