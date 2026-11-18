@@ -33,29 +33,35 @@
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: var(--dim); text-transform: uppercase; }
-  #nowLabel { font-size: 5.5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
-  /* Now-singing card: highlighted, with a mic icon. Name starts at 30vh (2x) and
-     shrinks to fit long names on one line (see fitName). */
-  #now { margin: .6vh 0 2.6vh; display: flex; align-items: center; gap: 2vw;
-    padding: 1.6vh 2vw; border-radius: 2.4vh;
+
+  /* Now singing bar: only while a song is playing. Smaller, green. */
+  #nowBar { display: flex; align-items: center; gap: 1.6vw; margin-bottom: 2.4vh;
+    padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
+    background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
+    box-shadow: 0 0 3vh rgba(57,255,136,.25); }
+  #nowBar svg { flex: none; height: 8vh; width: auto; }
+  #nowBarText { min-width: 0; flex: 1; }
+  #nowBarLabel { font-size: 2.8vh; font-weight: 800; letter-spacing: .28em; }
+  #nowBarName { font-size: 7vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 3vh; color: #fff; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
+  #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
+  #hero { margin: .6vh 0 2.4vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
     background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
-    border: .4vh solid rgba(252,255,0,.55);
-    box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #mic { flex: none; height: 20vh; width: auto; filter: drop-shadow(0 0 1.5vh rgba(252,255,0,.6)); }
-  #nowText { min-width: 0; flex: 1; }
-  #nowName { font-size: 28vh; font-weight: 800; line-height: 1; color: var(--accent);
+    border: .4vh solid rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
+  #heroName { font-size: 22vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #nowSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
+  #heroSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
-  #list { flex: 1; overflow: hidden; margin-top: 1.2vh; }
-  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: 1vh 0; border-bottom: 1px solid var(--line); }
-  .num { width: 4vw; font-size: 4vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 7.5vh; font-weight: 800; flex: 0 1 62%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #list { flex: 1; overflow: hidden; margin-top: 1vh; }
+  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
+  .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
+  .who { font-size: 6vh; font-weight: 800; flex: 0 1 62%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .what { font-size: 3vh; color: var(--dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
-  .row.first .who { color: var(--accent2); }
-  #more { font-size: 3.4vh; color: var(--dim); margin-top: 1.4vh; }
+  #more { font-size: 3.2vh; color: var(--dim); margin-top: 1.2vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
     border-radius: 99px; background: rgba(255,255,255,.08); color: var(--dim); }
@@ -99,23 +105,25 @@
 <div id="view" class="safe hidden">
   <img id="brand" src="logo.png" alt="">
   <div id="top">
-  <div class="label" id="nowLabel">Now singing</div>
-  <div id="now">
-    <svg id="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fcff00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="rgba(252,255,0,.25)"/>
-      <path d="M5 11a7 7 0 0 0 14 0"/>
-      <path d="M12 18v4"/>
-      <path d="M8.5 22h7"/>
-    </svg>
-    <div id="nowText">
-      <div id="nowName"></div>
-      <div id="nowSong"></div>
+    <div id="nowBar" class="hidden">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+      <div id="nowBarText">
+        <div id="nowBarLabel">NOW SINGING</div>
+        <div id="nowBarName"></div>
+        <div id="nowBarSong"></div>
+      </div>
     </div>
-  </div>
-  <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
+    <div id="heroWrap">
+      <div id="heroLabel">UP NEXT</div>
+      <div id="hero">
+        <div id="heroName"></div>
+        <div id="heroSong"></div>
+      </div>
+    </div>
+    <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
   </div>
   <div id="nextWrap">
-    <div class="label">Up next</div>
+    <div class="label">Coming up</div>
     <div id="list"></div>
     <div id="more"></div>
   </div>
@@ -135,8 +143,7 @@
   var WEBKCS_SRC = "https://cdnaws.recis.io/i/kf/common/js/external/webkcs.min.js";
   var STORE_KEY = "kfqv.code";
   var BLANK_KEY = "kfqv.blank";
-  var MAX_ROWS = 4;
-
+  
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -158,6 +165,7 @@
   var session = null;           // { kcsUrl, hash }
   var queue = [];               // raw KaraFun queue items
   var current = null;           // raw KaraFun current item (from status)
+  var playerState = 0;          // KaraFun status.state: 4 = playing, 5 = paused
   var retryTimer = null;
 
   // ---------------------------------------------------------------- KaraFun session
@@ -239,6 +247,7 @@
       var st = e && e.data && e.data.status;
       if (!st) return;
       current = st.current || null;
+      playerState = st.state || 0;
       render();
     });
     c.addEventHandler("remote.QueueEvent", function (e) {
@@ -258,43 +267,62 @@
     return { singer: singer, title: s.title || "", artist: s.artist || "" };
   }
 
+  function line(x) {
+    // Big text: singer, or the artist when no singer was entered. Small text: the song.
+    return {
+      big: x.singer || x.artist || x.title,
+      small: x.singer ? (x.title + "  ·  " + x.artist) : x.title
+    };
+  }
+
   function render() {
-    // The currently playing song is also the first queue item. Use status.current when
-    // we have it, otherwise fall back to the head of the queue.
+    // The current song is also the first queue item. Use status.current when we have it.
     var cur = current || queue[0] || null;
     var rest = queue.filter(function (it) { return !cur || it.id !== cur.id; });
 
-    var ci = info(cur);
-    $("now").classList.toggle("hidden", !ci);
-    $("empty").classList.toggle("hidden", !!ci || rest.length > 0);
-    if (ci) {
-      // No singer name (e.g. the Elvis tracks)? The artist takes the big slot.
-      $("nowName").textContent = ci.singer || ci.artist || ci.title;
-      $("nowSong").textContent = ci.singer ? (ci.title + "  ·  " + ci.artist) : ci.title;
-      fitName();
+    // Once the song is actually playing, the singer drops to the small green bar and the
+    // next person takes the big spot. Before play is pressed, the loaded song's singer
+    // is the one shown big as "UP NEXT".
+    var singing = !!cur && (playerState === 4 || playerState === 5);
+    var heroItem = singing ? rest[0] : cur;
+    var listItems = singing ? rest.slice(1) : rest;
+
+    $("nowBar").classList.toggle("hidden", !singing);
+    if (singing) {
+      var n = line(info(cur));
+      $("nowBarName").textContent = n.big;
+      $("nowBarSong").textContent = n.small;
     }
 
-    $("nextWrap").classList.toggle("hidden", rest.length === 0);
+    $("heroWrap").classList.toggle("hidden", !heroItem);
+    if (heroItem) {
+      var h = line(info(heroItem));
+      $("heroName").textContent = h.big;
+      $("heroSong").textContent = h.small;
+      fitName();
+    }
+    $("empty").classList.toggle("hidden", !!cur);
+
+    var maxRows = singing ? 3 : 4;
+    $("nextWrap").classList.toggle("hidden", listItems.length === 0);
     var html = "";
-    rest.slice(0, MAX_ROWS).forEach(function (it, i) {
-      var x = info(it);
-      var who = x.singer || x.artist || x.title;
-      var what = x.singer ? (x.title + "  ·  " + x.artist) : x.title;
-      html += '<div class="row' + (i === 0 ? " first" : "") + '"><span class="num">' + (i + 1) +
-        '</span><span class="who">' + esc(who) + '</span><span class="what">' + esc(what) + "</span></div>";
+    listItems.slice(0, maxRows).forEach(function (it, i) {
+      var l = line(info(it));
+      html += '<div class="row"><span class="num">' + (i + 2) +
+        '</span><span class="who">' + esc(l.big) + '</span><span class="what">' + esc(l.small) + "</span></div>";
     });
     $("list").innerHTML = html;
-    $("more").textContent = rest.length > MAX_ROWS ? "+ " + (rest.length - MAX_ROWS) + " more" : "";
+    $("more").textContent = listItems.length > maxRows ? "+ " + (listItems.length - maxRows) + " more" : "";
   }
 
   // Start the singer's name at full size and step it down until it fits on one line.
   var lastFit = "";
   function fitName() {
-    var el = $("nowName");
+    var el = $("heroName");
     var key = el.textContent + "|" + window.innerWidth + "x" + window.innerHeight;
     if (key === lastFit) return;
     lastFit = key;
-    var size = 28;
+    var size = 22;
     el.style.fontSize = size + "vh";
     while (size > 10 && el.scrollWidth > el.clientWidth + 1) {
       size -= 1;
