@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karaoke Queue</title>
+<style>
+  :root {
+    --bg: #0b0b14;
+    --fg: #ffffff;
+    --dim: rgba(255,255,255,.62);
+    --line: rgba(255,255,255,.12);
+    --accent: #ff3d9a;
+    --accent2: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden; }
+  /* 5% safe margins: some TVs crop the edges */
+  .safe { position: absolute; inset: 5vh 5vw; display: flex; flex-direction: column; }
+  .hidden { display: none !important; }
+
+  /* ---------- queue view ---------- */
+  .label { font-size: 2.4vh; letter-spacing: .32em; color: var(--dim); text-transform: uppercase; }
+  #now { margin: 1vh 0 4vh; }
+  #nowName { font-size: 10vh; font-weight: 800; line-height: 1.05; color: var(--accent);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #empty { font-size: 6vh; color: var(--dim); margin: 2vh 0 4vh; }
+  #list { flex: 1; overflow: hidden; margin-top: 1.2vh; }
+  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: 1.3vh 0; border-bottom: 1px solid var(--line); }
+  .num { width: 3.5vw; font-size: 3.2vh; color: var(--dim); text-align: right; flex: none; }
+  .who { font-size: 4.6vh; font-weight: 700; flex: 0 1 45%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { font-size: 3.2vh; color: var(--dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .row.first .who { color: var(--accent2); }
+  #more { font-size: 3vh; color: var(--dim); margin-top: 1.4vh; }
+
+  #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2vh; padding: .6vh 1.2vw;
+    border-radius: 99px; background: rgba(255,255,255,.08); color: var(--dim); }
+  #pill.bad { background: rgba(255,61,90,.18); color: #ffb3c0; }
+
+  /* ---------- menu (any arrow key) ---------- */
+  #menu { position: absolute; left: 50%; bottom: 8vh; transform: translateX(-50%);
+    display: flex; gap: 2vw; background: rgba(20,20,34,.96); padding: 2vh 2vw; border-radius: 2vh;
+    border: 1px solid var(--line); }
+
+  /* ---------- code entry ---------- */
+  #setup { align-items: center; justify-content: center; text-align: center; }
+  #setup h1 { font-size: 5vh; margin: 0 0 1vh; }
+  #setup p { font-size: 2.6vh; color: var(--dim); margin: 0 0 3vh; }
+  #codeBox { font-size: 8vh; font-weight: 800; letter-spacing: .4em; padding-left: .4em;
+    min-height: 11vh; margin-bottom: 3vh; font-variant-numeric: tabular-nums; }
+  #codeBox .ph { color: rgba(255,255,255,.18); }
+  #pad { display: grid; grid-template-columns: repeat(3, 12vh); gap: 1.6vh; justify-content: center; }
+  #setupMsg { min-height: 3.5vh; font-size: 2.6vh; color: #ffb3c0; margin-top: 2.4vh; }
+
+  button { font: inherit; color: var(--fg); background: rgba(255,255,255,.08);
+    border: .3vh solid transparent; border-radius: 1.6vh; cursor: pointer; }
+  #pad button { height: 10vh; font-size: 4.4vh; font-weight: 700; }
+  #pad button.wide { font-size: 2.6vh; }
+  #menu button { font-size: 2.8vh; padding: 1.6vh 2.4vw; }
+  button:focus { outline: none; border-color: var(--accent); background: rgba(255,61,154,.22); }
+</style>
+</head>
+<body>
+
+<!-- Code entry: shown until a KaraFun remote code is saved on this device -->
+<div id="setup" class="safe hidden">
+  <h1>Connect to KaraFun</h1>
+  <p>Enter the 6-digit remote control code from KaraFun (Settings → Remote control)</p>
+  <div id="codeBox"></div>
+  <div id="pad"></div>
+  <div id="setupMsg"></div>
+</div>
+
+<!-- Queue display -->
+<div id="view" class="safe hidden">
+  <div class="label">Now singing</div>
+  <div id="now">
+    <div id="nowName"></div>
+    <div id="nowSong"></div>
+  </div>
+  <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
+  <div id="nextWrap">
+    <div class="label">Up next</div>
+    <div id="list"></div>
+    <div id="more"></div>
+  </div>
+  <div id="pill">Connecting…</div>
+  <div id="menu" class="hidden">
+    <button id="btnFull">Full screen</button>
+    <button id="btnCode">Change code</button>
+    <button id="btnClose">Close</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var KF_HOST = "https://www.karafun.com/";
+  var WEBKCS_SRC = "https://cdnaws.recis.io/i/kf/common/js/external/webkcs.min.js";
+  var STORE_KEY = "kfqv.code";
+  var MAX_ROWS = 8;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  // localStorage can throw or come back empty on some browsers; never let it break the page.
+  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function save(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+
+  // ---------------------------------------------------------------- state
+  var params = new URLSearchParams(location.search);
+  var code = (params.get("code") || load(STORE_KEY) || "").replace(/\D/g, "");
+  var client = null;
+  var session = null;           // { kcsUrl, hash }
+  var queue = [];               // raw KaraFun queue items
+  var current = null;           // raw KaraFun current item (from status)
+  var retryTimer = null;
+
+  // ---------------------------------------------------------------- KaraFun session
+  // The public remote page embeds a short-lived websocket URL (kcs_url) and a hash
+  // that can be exchanged for a fresh URL. KaraFun serves these with
+  // Access-Control-Allow-Origin: *, so no server is needed.
+  function fetchSession(c) {
+    return fetch(KF_HOST + c + "/", { cache: "no-store" }).then(function (r) { return r.text(); })
+      .then(function (html) {
+        var kcs = (html.match(/"kcs_url"\s*:\s*"([^"]+)"/) || [])[1];
+        var hash = (html.match(/"hash"\s*:\s*"([a-f0-9]+)"/) || [])[1];
+        if (!kcs) throw new Error("no-session");
+        return { kcsUrl: kcs.replace(/\\\//g, "/"), hash: hash };
+      });
+  }
+
+  function freshUrl() {
+    // Used by WebKCS when it reconnects. Try the cheap endpoint first, then the full page.
+    var viaHash = session && session.hash
+      ? fetch(KF_HOST + code + "/?type=session_info&hash=" + session.hash, { cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { if (!j.kcs_url) throw 0; return j.kcs_url; })
+      : Promise.reject();
+    return viaHash.catch(function () {
+      return fetchSession(code).then(function (s) { session = s; return s.kcsUrl; });
+    });
+  }
+
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      if (window.WebKCS) return res();
+      var s = document.createElement("script");
+      s.src = src; s.onload = res; s.onerror = function () { rej(new Error("script")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function connect() {
+    clearTimeout(retryTimer);
+    setPill("Connecting…", false);
+    Promise.all([loadScript(WEBKCS_SRC), fetchSession(code)]).then(function (r) {
+      session = r[1];
+      startClient(session.kcsUrl);
+    }).catch(function (err) {
+      if (err && err.message === "no-session") {
+        setPill("KaraFun session not found. Is remote control on? Retrying…", true);
+      } else {
+        setPill("Can't reach KaraFun. Retrying…", true);
+      }
+      retryLater(8000);
+    });
+  }
+
+  function retryLater(ms) {
+    clearTimeout(retryTimer);
+    retryTimer = setTimeout(connect, ms);
+  }
+
+  function startClient(url) {
+    try { if (client && client.close) client.close(); } catch (e) {}
+    var c = WebKCS.Client.fromAddress(url);
+    client = c;
+    c.setUrlProvider(freshUrl);
+    c.setErrorHandler(function (e) { if (window.console) console.log("kcs error", e); });
+    c.addReadyHandler(function () { setPill("Live", false); });
+    c.setReconnectHandler(function () { setPill("Live", false); });
+    c.setLostConnectionHandler(function () { setPill("Connection lost. Reconnecting…", true); });
+    c.addCloseHandler(function (e) {
+      if (client !== c) return;
+      var codeNum = e && e.code;
+      // 4220 KaraFun app left, 4210 remote disabled, 4221/4403 invalid session
+      if (codeNum === 4220) { setPill("KaraFun app closed. Waiting…", true); setTimeout(function () { try { c.reconnect(); } catch (x) { retryLater(3000); } }, 3000); }
+      else if (codeNum === 4210) { setPill("Remote control is off in KaraFun. Waiting…", true); retryLater(10000); }
+      else { setPill("Reconnecting…", true); retryLater(4000); }
+    });
+    c.addEventHandler("remote.AppLeftEvent", function () { setPill("KaraFun app closed. Waiting…", true); });
+    c.addEventHandler("remote.AppJoinEvent", function () { setPill("Live", false); });
+    c.addEventHandler("remote.StatusEvent", function (e) {
+      var st = e && e.data && e.data.status;
+      if (!st) return;
+      current = st.current || null;
+      render();
+    });
+    c.addEventHandler("remote.QueueEvent", function (e) {
+      var q = e && e.data && e.data.queue;
+      queue = (q && q.items) || [];
+      render();
+    });
+  }
+
+  // ---------------------------------------------------------------- rendering
+  function info(item) {
+    if (!item) return null;
+    if (item.quiz) return { singer: "", title: item.quiz.title || "Music quiz", artist: "Quiz" };
+    var s = item.song || {};
+    var singer = (s.options && s.options.singer) || "";
+    return { singer: String(singer).trim(), title: s.title || "", artist: s.artist || "" };
+  }
+
+  function render() {
+    // The currently playing song is also the first queue item. Use status.current when
+    // we have it, otherwise fall back to the head of the queue.
+    var cur = current || queue[0] || null;
+    var rest = queue.filter(function (it) { return !cur || it.id !== cur.id; });
+
+    var ci = info(cur);
+    $("now").classList.toggle("hidden", !ci);
+    $("empty").classList.toggle("hidden", !!ci || rest.length > 0);
+    if (ci) {
+      // No singer name (e.g. the Elvis tracks)? Lead with the song title instead.
+      $("nowName").textContent = ci.singer || ci.title;
+      $("nowSong").textContent = ci.singer ? (ci.title + "  ·  " + ci.artist) : ci.artist;
+    }
+
+    $("nextWrap").classList.toggle("hidden", rest.length === 0);
+    var html = "";
+    rest.slice(0, MAX_ROWS).forEach(function (it, i) {
+      var x = info(it);
+      var who = x.singer || x.title;
+      var what = x.singer ? (x.title + "  ·  " + x.artist) : x.artist;
+      html += '<div class="row' + (i === 0 ? " first" : "") + '"><span class="num">' + (i + 1) +
+        '</span><span class="who">' + esc(who) + '</span><span class="what">' + esc(what) + "</span></div>";
+    });
+    $("list").innerHTML = html;
+    $("more").textContent = rest.length > MAX_ROWS ? "+ " + (rest.length - MAX_ROWS) + " more" : "";
+  }
+
+  var pillTimer = null;
+  function setPill(text, bad) {
+    var p = $("pill");
+    p.textContent = text;
+    p.classList.toggle("bad", !!bad);
+    p.classList.remove("hidden");
+    clearTimeout(pillTimer);
+    // Hide the "Live" pill after a few seconds so it doesn't sit on screen all night.
+    if (!bad) pillTimer = setTimeout(function () { p.classList.add("hidden"); }, 4000);
+  }
+
+  // ---------------------------------------------------------------- code entry (D-pad friendly)
+  var entry = "";
+  function buildPad() {
+    var keys = ["1","2","3","4","5","6","7","8","9","⌫","0","Go"];
+    var pad = $("pad");
+    pad.innerHTML = "";
+    keys.forEach(function (k) {
+      var b = document.createElement("button");
+      b.textContent = k;
+      if (k === "⌫" || k === "Go") b.className = "wide";
+      b.addEventListener("click", function () { pressKey(k); });
+      pad.appendChild(b);
+    });
+  }
+  function drawCode() {
+    var s = "";
+    for (var i = 0; i < 6; i++) s += entry[i] ? esc(entry[i]) : '<span class="ph">•</span>';
+    $("codeBox").innerHTML = s;
+  }
+  function pressKey(k) {
+    $("setupMsg").textContent = "";
+    if (k === "⌫") entry = entry.slice(0, -1);
+    else if (k === "Go") return submitCode();
+    else if (entry.length < 6) entry += k;
+    drawCode();
+  }
+  function submitCode() {
+    if (entry.length !== 6) { $("setupMsg").textContent = "The code has 6 digits."; return; }
+    $("setupMsg").textContent = "Checking…";
+    fetchSession(entry).then(function () {
+      code = entry;
+      save(STORE_KEY, code);
+      showView();
+    }).catch(function () {
+      $("setupMsg").textContent = "No KaraFun session with that code. Is remote control on?";
+    });
+  }
+  function showSetup() {
+    clearTimeout(retryTimer);
+    try { if (client && client.close) client.close(); } catch (e) {}
+    client = null;
+    entry = "";
+    $("view").classList.add("hidden");
+    $("setup").classList.remove("hidden");
+    buildPad();
+    drawCode();
+    var first = $("pad").querySelector("button");
+    if (first) first.focus();
+  }
+  function showView() {
+    $("setup").classList.add("hidden");
+    $("view").classList.remove("hidden");
+    render();
+    connect();
+    keepAwake();
+  }
+
+  // ---------------------------------------------------------------- remote control keys
+  // Arrow keys move focus between buttons (Silk usually does this itself; this is a fallback).
+  function moveFocus(dir) {
+    var scope = $("setup").classList.contains("hidden") ? $("menu") : $("pad");
+    var btns = Array.prototype.slice.call(scope.querySelectorAll("button"));
+    var i = btns.indexOf(document.activeElement);
+    if (i < 0) { btns[0] && btns[0].focus(); return; }
+    var cols = scope === $("pad") ? 3 : btns.length;
+    var j = i;
+    if (dir === "ArrowRight") j = i + 1;
+    if (dir === "ArrowLeft") j = i - 1;
+    if (dir === "ArrowDown") j = i + cols;
+    if (dir === "ArrowUp") j = i - cols;
+    if (btns[j]) btns[j].focus();
+  }
+
+  var menuTimer = null;
+  function openMenu() {
+    $("menu").classList.remove("hidden");
+    $("btnFull").focus();
+    armMenuTimer();
+  }
+  function closeMenu() { $("menu").classList.add("hidden"); if (document.activeElement) document.activeElement.blur(); }
+  function armMenuTimer() { clearTimeout(menuTimer); menuTimer = setTimeout(closeMenu, 10000); }
+
+  document.addEventListener("keydown", function (e) {
+    var k = e.key;
+    var inSetup = !$("setup").classList.contains("hidden");
+    if (inSetup) {
+      if (/^[0-9]$/.test(k)) { pressKey(k); e.preventDefault(); return; }
+      if (k === "Backspace") { pressKey("⌫"); e.preventDefault(); return; }
+      if (k.indexOf("Arrow") === 0) { moveFocus(k); e.preventDefault(); }
+      return;
+    }
+    var menuOpen = !$("menu").classList.contains("hidden");
+    if (!menuOpen && (k.indexOf("Arrow") === 0 || k === "Enter" || k === "ContextMenu")) {
+      openMenu(); e.preventDefault(); return;
+    }
+    if (menuOpen) {
+      armMenuTimer();
+      if (k.indexOf("Arrow") === 0) { moveFocus(k); e.preventDefault(); }
+    }
+  });
+
+  $("btnFull").addEventListener("click", function () {
+    var el = document.documentElement;
+    var fn = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (fn) { try { fn.call(el); } catch (e) {} }
+    closeMenu();
+  });
+  $("btnCode").addEventListener("click", function () { closeMenu(); showSetup(); });
+  $("btnClose").addEventListener("click", closeMenu);
+
+  // ---------------------------------------------------------------- keep the screen on
+  var wakeLock = null;
+  function keepAwake() {
+    if (!("wakeLock" in navigator)) return;
+    navigator.wakeLock.request("screen").then(function (l) { wakeLock = l; }).catch(function () {});
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && !$("view").classList.contains("hidden")) {
+      keepAwake();
+      // Coming back from the background: make sure we're still connected.
+      if (!client) connect();
+    }
+  });
+
+  // ---------------------------------------------------------------- start
+  if (params.has("code")) save(STORE_KEY, code);
+  if (params.has("reset")) { save(STORE_KEY, null); code = ""; }
+  if (/^\d{6}$/.test(code)) showView(); else showSetup();
+})();
+</script>
+</body>
+</html>
