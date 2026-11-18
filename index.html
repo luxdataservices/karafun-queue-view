@@ -42,11 +42,10 @@
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBarHead { display: flex; align-items: center; justify-content: center; gap: 1vw; }
-  #nowBar .mic { flex: none; height: 5vh; width: auto; }
-  #nowBar .mic.flip { transform: scaleX(-1); }
+  #nowBarRow { display: flex; align-items: center; justify-content: center; gap: 1.4vw; }
+  #nowBar .mic { flex: none; height: 6.5vh; width: auto; }
   /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
-  .wave { flex: none; display: flex; align-items: center; gap: .5vh; height: 4.5vh; }
+  .wave { flex: none; display: flex; align-items: center; gap: .5vh; height: 5.5vh; }
   .wave i { display: block; width: .9vh; height: 100%; border-radius: 1vh; background: #39ff88;
     transform-origin: center; animation: eq 1s ease-in-out infinite; }
   .wave i:nth-child(2) { animation-delay: -.2s; } .wave i:nth-child(3) { animation-delay: -.5s; }
@@ -54,9 +53,9 @@
   .wave i:nth-child(6) { animation-delay: -.65s; } .wave i:nth-child(7) { animation-delay: -.1s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
-  #nowBarLabel { font-size: 3.2vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { font-size: 10vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 7.5vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 3.6vh; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
@@ -129,14 +128,12 @@
   <img id="brand" src="logo.png" alt="">
   <div id="top">
     <div id="nowBar" class="hidden">
-      <div id="nowBarHead">
+      <div id="nowBarLabel">NOW SINGING</div>
+      <div id="nowBarRow">
         <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+        <div id="nowBarName"></div>
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div id="nowBarLabel">NOW SINGING</div>
-        <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
       </div>
-      <div id="nowBarName"></div>
       <div id="nowBarSong" class="mq"></div>
     </div>
     <div id="heroWrap">
@@ -384,7 +381,7 @@
 
   function fitName() {
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 6);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 10, 6);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 7.5, 4.5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
