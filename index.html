@@ -26,27 +26,23 @@
   .safe { position: absolute; inset: 5vh 5vw; display: flex; flex-direction: column; }
   .hidden { display: none !important; }
 
-  /* ---------- brand header ---------- */
-  #brand { display: flex; align-items: center; gap: 2vw; padding-bottom: 2vh; margin-bottom: 2.4vh;
-    border-bottom: .5vh solid var(--indigo); }
-  #brand img { height: 15vh; width: auto; flex: none; }
-  #brandName { font-family: "Rockwell", "Roboto Slab", "Noto Serif", Georgia, serif; font-weight: 900;
-    font-size: 9vh; line-height: 1; color: var(--yellow); letter-spacing: .02em; }
-  #brandSub { font-size: 3vh; font-weight: 700; letter-spacing: .28em; color: var(--teal); margin-top: .8vh; }
+  /* ---------- brand logo (top right) ---------- */
+  #brand { position: absolute; top: 0; right: 0; height: 26vh; width: auto; }
+  #top { padding-right: 30vh; } /* keep long names clear of the logo */
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: var(--dim); text-transform: uppercase; }
-  #now { margin: .3vh 0 2.6vh; }
-  #nowName { font-size: 11vh; font-weight: 800; line-height: 1.05; color: var(--accent);
+  #now { margin: 0 0 3vh; }
+  #nowName { font-size: 15vh; font-weight: 800; line-height: 1.05; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowSong { font-size: 4.6vh; color: var(--fg); opacity: .9; margin-top: .6vh;
+  #nowSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #list { flex: 1; overflow: hidden; margin-top: 1.2vh; }
-  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
-  .num { width: 4vw; font-size: 3.8vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 5.6vh; font-weight: 700; flex: 0 1 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .what { font-size: 3.8vh; color: var(--dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: 1vh 0; border-bottom: 1px solid var(--line); }
+  .num { width: 4vw; font-size: 4vh; color: var(--dim); text-align: right; flex: none; }
+  .who { font-size: 7.5vh; font-weight: 800; flex: 0 1 62%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { font-size: 3vh; color: var(--dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
   .row.first .who { color: var(--accent2); }
   #more { font-size: 3.4vh; color: var(--dim); margin-top: 1.4vh; }
 
@@ -90,19 +86,15 @@
 
 <!-- Queue display -->
 <div id="view" class="safe hidden">
-  <div id="brand">
-    <img src="logo.png" alt="">
-    <div>
-      <div id="brandName">THE JUKEBOX</div>
-      <div id="brandSub">KARAOKE · BURNSVILLE, NC</div>
-    </div>
-  </div>
+  <img id="brand" src="logo.png" alt="">
+  <div id="top">
   <div class="label">Now singing</div>
   <div id="now">
     <div id="nowName"></div>
     <div id="nowSong"></div>
   </div>
   <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
+  </div>
   <div id="nextWrap">
     <div class="label">Up next</div>
     <div id="list"></div>
@@ -124,7 +116,7 @@
   var WEBKCS_SRC = "https://cdnaws.recis.io/i/kf/common/js/external/webkcs.min.js";
   var STORE_KEY = "kfqv.code";
   var BLANK_KEY = "kfqv.blank";
-  var MAX_ROWS = 4;
+  var MAX_ROWS = 5;
 
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) {
