@@ -66,14 +66,14 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 10.8vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 10.8vh; font-weight: 800; line-height: 1.25; padding-bottom: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #nowBarSong { font-size: 4.8vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { color: var(--accent); border-color: rgba(252,255,0,.45); }
   #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 10.8vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 10.8vh; font-weight: 800; line-height: 1.25; padding-bottom: .05em; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
   #heroSong { font-size: 4.8vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
@@ -89,14 +89,14 @@
   #list.two { grid-template-columns: 1fr 1fr; }
   .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: calc(var(--s) * .7vh) 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: calc(var(--s) * 3.6vh); color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: calc(var(--s) * 6.2vh); font-weight: 800; color: #ff9f1c; line-height: 1.1; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .who { font-size: calc(var(--s) * 6.2vh); font-weight: 800; color: #ff9f1c; line-height: 1.25; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 1.2vw; }
   /* Text too long for its space slides slowly back and forth so the whole title can be read */
   .mq { overflow: hidden; white-space: nowrap; text-overflow: clip !important; }
   .mq > span { display: inline-block; }
   .mq.scroll > span { animation: mq var(--t, 8s) ease-in-out infinite alternate; }
   @keyframes mq { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--d)); } }
-  .what { min-width: 0; flex: 1; font-size: calc(var(--s) * 3.2vh); font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { min-width: 0; flex: 1; font-size: calc(var(--s) * 3.2vh); font-weight: 600; color: rgba(255,255,255,.42); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
