@@ -44,13 +44,17 @@
   /* Slow pulse so the current singer "flashes" gently. Opacity only: cheap on a Fire Stick. */
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   /* Now Singing and Up Next share the same box size */
-  #nowBar, #hero { box-sizing: border-box; min-height: 21vh; margin: 0 0 1.6vh; padding: 1.4vh 2vw;
-    border-radius: 2.4vh; border: .4vh solid; text-align: center;
-    display: flex; flex-direction: column; justify-content: center; }
+  /* Now Singing and Up Next: same size; big label on the left, name + song on the right */
+  #nowBar, #hero { box-sizing: border-box; min-height: 19vh; margin: 0 0 1.6vh; padding: 1.4vh 2vw;
+    border-radius: 2.4vh; border: .4vh solid; text-align: left;
+    display: flex; flex-direction: row; align-items: center; gap: 2.4vw; }
+  .boxLabel { flex: none; width: 22%; font-size: 6.4vh; font-weight: 900; line-height: 1.05;
+    letter-spacing: .04em; padding-right: 2vw; border-right: .3vh solid rgba(57,255,136,.45); }
+  .boxBody { min-width: 0; flex: 1; }
   #nowBar { animation: pulse 2.6s ease-in-out infinite; color: #39ff88;
     background: rgba(57,255,136,.12); border-color: rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBarRow { display: flex; align-items: center; justify-content: center; gap: 1.4vw; }
+  #nowBarRow { display: flex; align-items: center; gap: 1.4vw; }
   #nowBar .mic { flex: none; height: 6.5vh; width: auto; }
   /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
   .wave { flex: none; display: flex; align-items: center; gap: .5vh; height: 5.5vh; }
@@ -61,15 +65,15 @@
   .wave i:nth-child(6) { animation-delay: -.65s; } .wave i:nth-child(7) { animation-delay: -.1s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
-  #nowBarLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 8vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarLabel { }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 9vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #nowBarSong { font-size: 4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
-  #heroLabel { font-size: 3.4vh; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
-  #hero { text-align: left; min-height: 25vh; background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
+  #heroLabel { color: var(--accent); border-color: rgba(252,255,0,.45); }
+  #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 11vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 9vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
   #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
@@ -135,19 +139,23 @@
   <img id="brand" src="logo.png" alt="">
   <div id="top">
     <div id="nowBar" class="hidden">
-      <div id="nowBarLabel">NOW SINGING</div>
+      <div id="nowBarLabel" class="boxLabel">NOW<br>SINGING</div>
+      <div class="boxBody">
       <div id="nowBarRow">
         <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
         <div id="nowBarName"></div>
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div id="nowBarSong" class="mq"></div>
+      </div>
     </div>
     <div id="heroWrap">
       <div id="hero">
-        <div id="heroLabel">UP NEXT</div>
-        <div id="heroName"></div>
-        <div id="heroSong" class="mq"></div>
+        <div id="heroLabel" class="boxLabel">UP<br>NEXT</div>
+        <div class="boxBody">
+          <div id="heroName"></div>
+          <div id="heroSong" class="mq"></div>
+        </div>
       </div>
     </div>
     <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
@@ -412,8 +420,8 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 5);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 8, 4.5);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
