@@ -103,6 +103,7 @@
   var KF_HOST = "https://www.karafun.com/";
   var WEBKCS_SRC = "https://cdnaws.recis.io/i/kf/common/js/external/webkcs.min.js";
   var STORE_KEY = "kfqv.code";
+  var BLANK_KEY = "kfqv.blank";
   var MAX_ROWS = 5;
 
   var $ = function (id) { return document.getElementById(id); };
@@ -118,6 +119,10 @@
   // ---------------------------------------------------------------- state
   var params = new URLSearchParams(location.search);
   var code = (params.get("code") || load(STORE_KEY) || "").replace(/\D/g, "");
+  // Singer names to treat as "no singer" (e.g. the default name KaraFun fills in when
+  // nobody types one). Set with ?blank=Name1,Name2 ; saved on this device.
+  if (params.has("blank")) save(BLANK_KEY, params.get("blank"));
+  var blankNames = (load(BLANK_KEY) || "").split(",").map(function (n) { return n.trim().toLowerCase(); }).filter(Boolean);
   var client = null;
   var session = null;           // { kcsUrl, hash }
   var queue = [];               // raw KaraFun queue items
@@ -217,8 +222,9 @@
     if (!item) return null;
     if (item.quiz) return { singer: "", title: item.quiz.title || "Music quiz", artist: "Quiz" };
     var s = item.song || {};
-    var singer = (s.options && s.options.singer) || "";
-    return { singer: String(singer).trim(), title: s.title || "", artist: s.artist || "" };
+    var singer = String((s.options && s.options.singer) || "").trim();
+    if (blankNames.indexOf(singer.toLowerCase()) !== -1) singer = "";
+    return { singer: singer, title: s.title || "", artist: s.artist || "" };
   }
 
   function render() {

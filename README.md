@@ -13,6 +13,7 @@ It's a single static page (`index.html`) with no build step and no server. It co
 URL options:
 - `?code=123456` sets and saves the code (handy as a bookmark on the TV)
 - `?reset` forgets the saved code
+- `?blank=Default Name` treats that singer name as "no singer", so those songs show the song title instead. Use this for the name KaraFun fills in when nobody types one. Separate several names with commas. Saved on the device.
 
 Fire TV tip: set **Settings → Display & Sounds → Screensaver → Start Time → Never** so the screensaver doesn't cover the queue.
 
