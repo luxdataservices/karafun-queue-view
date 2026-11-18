@@ -1,0 +1,45 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.luxdataservices.jukeboxqueue"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.luxdataservices.jukeboxqueue"
+        minSdk 22          // Fire OS 5 and newer
+        targetSdk 34
+        // CI passes the run number so each build installs over the previous one.
+        versionCode((project.findProperty("versionCode") ?: "1") as int)
+        versionName "1." + ((project.findProperty("versionCode") ?: "1") as String)
+    }
+
+    signingConfigs {
+        // A fixed key so new builds install as updates over the old app.
+        // This only signs a sideloaded kiosk wrapper; it protects nothing secret.
+        release {
+            storeFile file("jukebox.keystore")
+            storePassword "jukeboxqueue"
+            keyAlias "jukebox"
+            keyPassword "jukeboxqueue"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}

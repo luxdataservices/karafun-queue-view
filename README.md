@@ -26,3 +26,13 @@ Import this repo into Vercel as a project (framework preset: **Other**, no build
 KaraFun's public remote page (`karafun.com/<code>/`) embeds a short-lived WebSocket address for the session. The page fetches that (KaraFun allows cross-origin reads), loads KaraFun's own `WebKCS` client from their CDN, and listens for `remote.QueueEvent` and `remote.StatusEvent`. It doesn't send anything to KaraFun.
 
 This relies on KaraFun's undocumented remote protocol, so a KaraFun update could break it.
+
+## Fire TV app
+
+`android/` is a tiny full-screen wrapper app that opens the GitHub Pages site, keeps the screen awake, and reloads itself daily at 5 AM so it always runs the latest version. Display changes go live by pushing `index.html`; the app only needs reinstalling if `android/` changes.
+
+GitHub Actions builds it on every change to `android/` and attaches it to the **Fire TV app** release. Install it on a Fire OS Fire TV Stick with the Downloader app:
+
+`https://github.com/luxdataservices/karafun-queue-view/releases/latest/download/jukebox-queue.apk`
+
+Remote buttons in the app: arrows or select open the display menu, Menu (☰) reloads, Back twice exits.
