@@ -55,8 +55,8 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { font-size: 3.2vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { font-size: 7vh; font-weight: 800; line-height: 1.1; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 10vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { font-size: 10vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
@@ -78,6 +78,11 @@
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
   .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell { min-width: 0; flex: 1; }
+  /* Text too long for its space slides slowly back and forth so the whole title can be read */
+  .mq { overflow: hidden; white-space: nowrap; text-overflow: clip !important; }
+  .mq > span { display: inline-block; }
+  .mq.scroll > span { animation: mq var(--t, 8s) ease-in-out infinite alternate; }
+  @keyframes mq { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--d)); } }
   .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
@@ -131,14 +136,14 @@
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
       </div>
-      <div id="nowBarSong"></div>
       <div id="nowBarName"></div>
+      <div id="nowBarSong" class="mq"></div>
     </div>
     <div id="heroWrap">
       <div id="heroLabel">UP NEXT</div>
       <div id="hero">
         <div id="heroName"></div>
-        <div id="heroSong"></div>
+        <div id="heroSong" class="mq"></div>
       </div>
     </div>
     <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
@@ -311,12 +316,10 @@
     $("nowBar").classList.toggle("hidden", !singing);
     if (singing) {
       var n = line(info(cur));
-      // Song title on top, singer underneath (artist if no singer was entered).
-      var ni = info(cur);
-      $("nowBarSong").textContent = ni.title;
-      $("nowBarName").textContent = ni.singer || ni.artist;
+      $("nowBarName").textContent = n.big;
+      $("nowBarSong").textContent = n.small;
     }
-    setTimeout(fitName, 0);
+    setTimeout(function () { fitName(); marquee(); }, 0);
 
     $("heroWrap").classList.toggle("hidden", !heroItem);
     if (heroItem) {
@@ -339,7 +342,7 @@
     listItems.slice(0, maxRows).forEach(function (it, i) {
       var l = line(info(it));
       html += '<div class="row"><span class="num">' + (i + 2) +
-        '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what">' + esc(l.small) + "</div></div></div>";
+        '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
     });
     $("list").innerHTML = html;
     $("more").textContent = listItems.length > maxRows ? "+ " + (listItems.length - maxRows) + " more" : "";
@@ -359,9 +362,29 @@
       el.style.fontSize = size + "vh";
     }
   }
+  function marquee() {
+    var els = document.querySelectorAll(".mq");
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!el.firstChild || el.firstChild.nodeType === 3) {
+        var t = el.textContent;
+        el.innerHTML = "<span>" + esc(t) + "</span>";
+      }
+      var span = el.firstChild;
+      var extra = span.scrollWidth - el.clientWidth;
+      if (extra > 2) {
+        el.style.setProperty("--d", (-extra - 8) + "px");
+        el.style.setProperty("--t", Math.max(5, extra / 45).toFixed(1) + "s");
+        el.classList.add("scroll");
+      } else {
+        el.classList.remove("scroll");
+      }
+    }
+  }
+
   function fitName() {
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 6);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarSong", 10, 5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 10, 6);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
