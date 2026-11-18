@@ -30,7 +30,7 @@
   /* ---------- brand logo (top right) ---------- */
   /* Logo in the top-right corner */
   #brand { position: absolute; top: 0; right: 0; height: 39vh; width: auto; }
-  #top { padding-right: 42vh; } /* keep names clear of the logo */
+  #top { padding-right: 46vh; } /* keep names clear of the logo */
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: #ffc27a; text-transform: uppercase; }
@@ -69,11 +69,15 @@
   #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
-  #list { flex: 1; overflow: hidden; margin-top: 1vh; }
-  .row { display: flex; align-items: baseline; gap: 2.2vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
+  #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
+  /* Coming up: fills the first column, then a second column, side by side */
+  #list { flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
+    grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
+  #list.two { grid-template-columns: 1fr 1fr; }
+  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.6vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 6vh; font-weight: 800; color: #ff9f1c; flex: 0 1 62%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .what { font-size: 3.8vh; font-weight: 700; color: rgba(255,255,255,.85); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; flex: 0 1 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: 1.2vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
@@ -139,7 +143,7 @@
     <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
   </div>
   <div id="nextWrap">
-    <div class="label">Coming up</div>
+    <div id="nextLabel">COMING UP</div>
     <div id="list"></div>
     <div id="more"></div>
   </div>
@@ -320,7 +324,13 @@
     }
     $("empty").classList.toggle("hidden", !!cur);
 
-    var maxRows = singing ? 3 : 4;
+    // Rows per column; a second column opens once the first one is full.
+    var perCol = singing ? 3 : 5;
+    var maxRows = perCol * 2;
+    var shown = Math.min(listItems.length, maxRows);
+    var list = $("list");
+    list.classList.toggle("two", shown > perCol);
+    list.style.gridTemplateRows = "repeat(" + Math.min(shown, perCol) + ", auto)";
     $("nextWrap").classList.toggle("hidden", listItems.length === 0);
     var html = "";
     listItems.slice(0, maxRows).forEach(function (it, i) {
