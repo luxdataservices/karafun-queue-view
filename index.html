@@ -86,9 +86,9 @@
   #list { --s: 1; flex: 1; min-height: 0; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
-  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: calc(var(--s) * .7vh) 0; border-bottom: 1px solid var(--line); }
+  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: calc(var(--s) * .2vh) 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: calc(var(--s) * 3.6vh); color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: calc(var(--s) * 7.75vh); font-weight: 800; color: #ff9f1c; line-height: 1.25; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .who { font-size: calc(var(--s) * 7.75vh); font-weight: 800; color: #ff9f1c; line-height: 1.12; padding-bottom: .08em; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 1.2vw; }
   /* Text too long for its space slides slowly back and forth so the whole title can be read */
   /* Song + artist that don't fit together take turns: title, then artist (see flipText) */
@@ -379,7 +379,7 @@
     var sc = 1;
     list.style.setProperty("--s", sc);
     while (sc > 0.4 && list.scrollHeight > list.clientHeight + 1) {
-      sc -= 0.05;
+      sc -= 0.02;
       list.style.setProperty("--s", sc.toFixed(2));
     }
     setTimeout(marquee, 0);
