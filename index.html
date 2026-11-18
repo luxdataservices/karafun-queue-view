@@ -33,9 +33,18 @@
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: var(--dim); text-transform: uppercase; }
-  #now { margin: 0 0 3vh; }
-  #nowName { font-size: 15vh; font-weight: 800; line-height: 1.05; color: var(--accent);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Now-singing card: highlighted, with a mic icon. Name starts at 30vh (2x) and
+     shrinks to fit long names on one line (see fitName). */
+  #now { margin: .6vh 0 2.6vh; display: flex; align-items: center; gap: 2vw;
+    padding: 1.6vh 2vw; border-radius: 2.4vh;
+    background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
+    border: .4vh solid rgba(252,255,0,.55);
+    box-shadow: 0 0 4vh rgba(252,255,0,.25); }
+  #mic { flex: none; height: 22vh; width: auto; filter: drop-shadow(0 0 1.5vh rgba(252,255,0,.6)); }
+  #nowText { min-width: 0; flex: 1; }
+  #nowName { font-size: 30vh; font-weight: 800; line-height: 1; color: var(--accent);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-shadow: 0 0 3vh rgba(252,255,0,.35); }
   #nowSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
@@ -91,8 +100,16 @@
   <div id="top">
   <div class="label">Now singing</div>
   <div id="now">
-    <div id="nowName"></div>
-    <div id="nowSong"></div>
+    <svg id="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fcff00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="rgba(252,255,0,.25)"/>
+      <path d="M5 11a7 7 0 0 0 14 0"/>
+      <path d="M12 18v4"/>
+      <path d="M8.5 22h7"/>
+    </svg>
+    <div id="nowText">
+      <div id="nowName"></div>
+      <div id="nowSong"></div>
+    </div>
   </div>
   <div id="empty" class="hidden">The queue is empty. Sign up to sing!</div>
   </div>
@@ -117,7 +134,7 @@
   var WEBKCS_SRC = "https://cdnaws.recis.io/i/kf/common/js/external/webkcs.min.js";
   var STORE_KEY = "kfqv.code";
   var BLANK_KEY = "kfqv.blank";
-  var MAX_ROWS = 5;
+  var MAX_ROWS = 4;
 
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) {
@@ -253,6 +270,7 @@
       // No singer name (e.g. the Elvis tracks)? The artist takes the big slot.
       $("nowName").textContent = ci.singer || ci.artist || ci.title;
       $("nowSong").textContent = ci.singer ? (ci.title + "  ·  " + ci.artist) : ci.title;
+      fitName();
     }
 
     $("nextWrap").classList.toggle("hidden", rest.length === 0);
@@ -267,6 +285,22 @@
     $("list").innerHTML = html;
     $("more").textContent = rest.length > MAX_ROWS ? "+ " + (rest.length - MAX_ROWS) + " more" : "";
   }
+
+  // Start the singer's name at full size and step it down until it fits on one line.
+  var lastFit = "";
+  function fitName() {
+    var el = $("nowName");
+    var key = el.textContent + "|" + window.innerWidth + "x" + window.innerHeight;
+    if (key === lastFit) return;
+    lastFit = key;
+    var size = 30;
+    el.style.fontSize = size + "vh";
+    while (size > 10 && el.scrollWidth > el.clientWidth + 1) {
+      size -= 1;
+      el.style.fontSize = size + "vh";
+    }
+  }
+  window.addEventListener("resize", function () { lastFit = ""; fitName(); });
 
   var pillTimer = null;
   function setPill(text, bad) {
