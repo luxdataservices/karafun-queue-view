@@ -22,7 +22,8 @@
   /* Silk on Fire TV hides its address bar once a page scrolls a little, so the page is made
      2px taller than the screen and nudged down (see hideSilkBar). */
   html.silkfix, html.silkfix body { overflow-y: auto !important; overflow-x: hidden; }
-  html.silkfix body { min-height: calc(100vh + 2px); }
+  html.silkfix body { min-height: calc(100vh + 300px); }
+  html.silkfix .safe { position: fixed; } /* content stays put while the page scrolls */
   /* Purple fade from the logo's indigo (#3A00FF) to its violet (#9226D6), darkened so text stays readable. */
   html, body { margin: 0; height: 100%; background: #1c0870 linear-gradient(135deg, #1c0870 0%, #2a0c9e 40%, #4a1690 75%, #5e1c95 100%); color: var(--fg);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -554,10 +555,10 @@
   // ---------------------------------------------------------------- Silk address bar
   function hideSilkBar() {
     document.documentElement.classList.add("silkfix");
-    window.scrollTo(0, 2);
+    window.scrollTo(0, 300);
   }
   window.addEventListener("load", function () { setTimeout(hideSilkBar, 300); });
-  setInterval(function () { if (window.scrollY < 1) hideSilkBar(); }, 5000);
+  setInterval(function () { if (window.scrollY < 290) hideSilkBar(); }, 5000);
 
   // ---------------------------------------------------------------- start
   if (params.has("code")) save(STORE_KEY, code);
