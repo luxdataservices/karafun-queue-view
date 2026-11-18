@@ -79,16 +79,16 @@
   #list { transition: opacity .4s; flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
-  .row { min-width: 0; display: flex; align-items: center; gap: 1.4vw; padding: .8vh 0; border-bottom: 1px solid var(--line); }
+  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: .7vh 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cell { min-width: 0; flex: 1; }
+  .who { font-size: 6.2vh; font-weight: 800; color: #ff9f1c; line-height: 1.1; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cell { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 1.2vw; }
   /* Text too long for its space slides slowly back and forth so the whole title can be read */
   .mq { overflow: hidden; white-space: nowrap; text-overflow: clip !important; }
   .mq > span { display: inline-block; }
   .mq.scroll > span { animation: mq var(--t, 8s) ease-in-out infinite alternate; }
   @keyframes mq { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--d)); } }
-  .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { min-width: 0; flex: 1; font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
@@ -335,7 +335,7 @@
     }
     $("empty").classList.toggle("hidden", !!cur);
 
-    listState = { items: listItems, perCol: singing ? 3 : 5 };
+    listState = { items: listItems, perCol: singing ? 4 : 6 };
     $("nextWrap").classList.toggle("hidden", listItems.length === 0);
     renderList();
   }
