@@ -38,9 +38,12 @@
   /* Now singing bar: only while a song is playing. Smaller, green. */
   /* Slow pulse so the current singer "flashes" gently. Opacity only: cheap on a Fire Stick. */
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 1.6vh; text-align: center;
-    padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
-    background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
+  /* Now Singing and Up Next share the same box size */
+  #nowBar, #hero { box-sizing: border-box; min-height: 21vh; margin: 0 0 1.6vh; padding: 1.4vh 2vw;
+    border-radius: 2.4vh; border: .4vh solid; text-align: center;
+    display: flex; flex-direction: column; justify-content: center; }
+  #nowBar { animation: pulse 2.6s ease-in-out infinite; color: #39ff88;
+    background: rgba(57,255,136,.12); border-color: rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
   #nowBarRow { display: flex; align-items: center; justify-content: center; gap: 1.4vw; }
   #nowBar .mic { flex: none; height: 6.5vh; width: auto; }
@@ -54,23 +57,22 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 7.5vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 4.6vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 8vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
-  #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
-  #hero { margin: .4vh 0 1.6vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
-    background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
-    border: .4vh solid rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 11vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
+  #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
+    border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
+  #heroName { font-size: 8vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
+  #heroSong { font-size: 4vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
   /* Coming up: fills the first column, then a second column, side by side */
-  #list { flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
+  #list { transition: opacity .4s; flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
   .row { min-width: 0; display: flex; align-items: center; gap: 1.4vw; padding: .8vh 0; border-bottom: 1px solid var(--line); }
@@ -137,8 +139,8 @@
       <div id="nowBarSong" class="mq"></div>
     </div>
     <div id="heroWrap">
-      <div id="heroLabel">UP NEXT</div>
       <div id="hero">
+        <div id="heroLabel">UP NEXT</div>
         <div id="heroName"></div>
         <div id="heroSong" class="mq"></div>
       </div>
@@ -329,23 +331,46 @@
     }
     $("empty").classList.toggle("hidden", !!cur);
 
-    // Rows per column; a second column opens once the first one is full.
-    var perCol = singing ? 3 : 5;
-    var maxRows = perCol * 2;
-    var shown = Math.min(listItems.length, maxRows);
-    var list = $("list");
-    list.classList.toggle("two", shown > perCol);
-    list.style.gridTemplateRows = "repeat(" + Math.min(shown, perCol) + ", auto)";
+    listState = { items: listItems, perCol: singing ? 3 : 5 };
     $("nextWrap").classList.toggle("hidden", listItems.length === 0);
+    renderList();
+  }
+
+  // Coming Up: rows per column; a second column opens once the first is full.
+  // When more people are waiting than fit, it pages through them every few seconds.
+  var PAGE_MS = 8000;
+  var listState = { items: [], perCol: 5 };
+  var page = 0;
+  function renderList() {
+    var items = listState.items, perCol = listState.perCol;
+    var maxRows = perCol * 2;
+    var pages = Math.max(1, Math.ceil(items.length / maxRows));
+    if (page >= pages) page = 0;
+    var start = page * maxRows;
+    var slice = items.slice(start, start + maxRows);
+    var list = $("list");
+    list.classList.toggle("two", slice.length > perCol || pages > 1);
+    list.style.gridTemplateRows = "repeat(" + Math.min(Math.max(slice.length, 1), perCol) + ", auto)";
+    if (pages > 1) list.style.gridTemplateRows = "repeat(" + perCol + ", auto)";
     var html = "";
-    listItems.slice(0, maxRows).forEach(function (it, i) {
+    slice.forEach(function (it, i) {
       var l = line(info(it));
-      html += '<div class="row"><span class="num">' + (i + 2) +
+      html += '<div class="row"><span class="num">' + (start + i + 2) +
         '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
     });
-    $("list").innerHTML = html;
-    $("more").textContent = listItems.length > maxRows ? "+ " + (listItems.length - maxRows) + " more" : "";
+    list.innerHTML = html;
+    $("more").textContent = pages > 1
+      ? "Page " + (page + 1) + " of " + pages + "  ·  " + items.length + " singers waiting"
+      : "";
+    setTimeout(marquee, 0);
   }
+  setInterval(function () {
+    var maxRows = listState.perCol * 2;
+    if (listState.items.length <= maxRows) { page = 0; return; }
+    var list = $("list");
+    list.style.opacity = "0";
+    setTimeout(function () { page++; renderList(); list.style.opacity = "1"; }, 400);
+  }, PAGE_MS);
 
   // Start each big name at full size and step it down until it fits on one line.
   var fitCache = {};
@@ -382,8 +407,8 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 6);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 7.5, 4.5);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 8, 4.5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 8, 4.5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
