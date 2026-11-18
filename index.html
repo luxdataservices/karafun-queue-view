@@ -45,20 +45,20 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   /* Now Singing and Up Next share the same box size */
   /* Now Singing and Up Next: same size; big label on the left, name + song on the right */
-  #nowBar, #hero { box-sizing: border-box; min-height: 18vh; margin: 0 0 1.4vh; padding: 1.2vh 2vw;
+  #nowBar, #hero { box-sizing: border-box; min-height: 25vh; margin: 0 0 1.6vh; padding: 1.4vh 2.4vw;
     border-radius: 2.4vh; border: .4vh solid; text-align: left;
     display: flex; flex-direction: row; align-items: center; gap: 2.4vw; }
-  .boxLabel { flex: none; min-width: 15vw; font-size: 5.4vh; font-weight: 900; line-height: 1.05;
+  .boxLabel { flex: none; min-width: 20vw; font-size: 8vh; font-weight: 900; line-height: 1.05;
     letter-spacing: .04em; padding-right: 2vw; border-right: .3vh solid rgba(57,255,136,.45); }
   .boxBody { min-width: 0; flex: 1; }
   #nowBar { animation: pulse 2.6s ease-in-out infinite; color: #39ff88;
     background: rgba(57,255,136,.12); border-color: rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
   #nowBarRow { display: flex; align-items: center; gap: 1.4vw; }
-  #nowBar .mic { flex: none; height: 6.5vh; width: auto; }
+  #nowBar .mic { flex: none; height: 9vh; width: auto; }
   /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
-  .wave { flex: none; display: flex; align-items: center; gap: .5vh; height: 5.5vh; }
-  .wave i { display: block; width: .9vh; height: 100%; border-radius: 1vh; background: #39ff88;
+  .wave { flex: none; display: flex; align-items: center; gap: .7vh; height: 8vh; }
+  .wave i { display: block; width: 1.2vh; height: 100%; border-radius: 1vh; background: #39ff88;
     transform-origin: center; animation: eq 1s ease-in-out infinite; }
   .wave i:nth-child(2) { animation-delay: -.2s; } .wave i:nth-child(3) { animation-delay: -.5s; }
   .wave i:nth-child(4) { animation-delay: -.8s; } .wave i:nth-child(5) { animation-delay: -.35s; }
@@ -66,22 +66,24 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 9vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 4.2vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 13.5vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 6vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { color: var(--accent); border-color: rgba(252,255,0,.45); }
   #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 9vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 13.5vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 4.2vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
+  #heroSong { font-size: 6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
   /* Coming up: fills the first column, then a second column, side by side */
-  #nextWrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  /* Gap and divider between the two big boxes and Coming Up */
+  #nextWrap { flex: 1; min-height: 0; display: flex; flex-direction: column;
+    margin-top: 2vh; padding-top: 2vh; border-top: .4vh solid rgba(255,194,122,.35); }
   #list { --s: 1; flex: 1; min-height: 0; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
@@ -414,8 +416,8 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 6.5);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 13.5, 6);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 13.5, 8);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); renderList(); });
 
