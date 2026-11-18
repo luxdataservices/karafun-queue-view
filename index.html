@@ -92,10 +92,9 @@
   .who { font-size: calc(var(--s) * 6.2vh); font-weight: 800; color: #ff9f1c; line-height: 1.25; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 1.2vw; }
   /* Text too long for its space slides slowly back and forth so the whole title can be read */
-  .mq { overflow: hidden; white-space: nowrap; text-overflow: clip !important; }
-  .mq > span { display: inline-block; }
-  .mq.scroll > span { animation: mq var(--t, 8s) ease-in-out infinite alternate; }
-  @keyframes mq { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--d)); } }
+  /* Song + artist that don't fit together take turns: title, then artist (see flipText) */
+  .mq { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; transition: opacity .35s; }
+  .mq.fade { opacity: 0; }
   .what { min-width: 0; flex: 1; font-size: calc(var(--s) * 3.2vh); font-weight: 600; color: rgba(255,255,255,.42); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
@@ -146,7 +145,7 @@
       <div class="boxBody">
       <div id="nowBarRow">
         <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
-        <div id="nowBarName" class="mq"></div>
+        <div id="nowBarName"></div>
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div id="nowBarSong" class="mq"></div>
@@ -400,25 +399,40 @@
       el.style.fontSize = size + "vh";
     }
   }
+  // For each song line: if "Title · Artist" fits, show it. If not, alternate between
+  // the title and the artist every few seconds with a quick fade.
+  var SEP = "  \u00b7  ";
+  var flip = false;
+  function partsOf(el) {
+    if (el.textContent !== el.getAttribute("data-shown")) el.setAttribute("data-full", el.textContent);
+    return (el.getAttribute("data-full") || "").split(SEP);
+  }
+  function show(el, text) { el.textContent = text; el.setAttribute("data-shown", text); }
   function marquee() {
     var els = document.querySelectorAll(".mq");
     for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      if (!el.firstChild || el.firstChild.nodeType === 3) {
-        var t = el.textContent;
-        el.innerHTML = "<span>" + esc(t) + "</span>";
-      }
-      var span = el.firstChild;
-      var extra = span.scrollWidth - el.clientWidth;
-      if (extra > 2) {
-        el.style.setProperty("--d", (-extra - 8) + "px");
-        el.style.setProperty("--t", Math.max(5, extra / 45).toFixed(1) + "s");
-        el.classList.add("scroll");
+      var el = els[i], parts = partsOf(el);
+      show(el, parts.join(SEP));
+      if (parts.length > 1 && el.scrollWidth > el.clientWidth + 1) {
+        el.setAttribute("data-alt", "1");
+        show(el, flip ? parts[1] : parts[0]);
       } else {
-        el.classList.remove("scroll");
+        el.removeAttribute("data-alt");
       }
     }
   }
+  setInterval(function () {
+    flip = !flip;
+    var els = document.querySelectorAll('.mq[data-alt="1"]');
+    for (var i = 0; i < els.length; i++) els[i].classList.add("fade");
+    setTimeout(function () {
+      for (var i = 0; i < els.length; i++) {
+        var parts = partsOf(els[i]);
+        show(els[i], flip ? (parts[1] || parts[0]) : parts[0]);
+        els[i].classList.remove("fade");
+      }
+    }, 350);
+  }, 4000);
 
   function fitName() {
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 10.8, 5);
