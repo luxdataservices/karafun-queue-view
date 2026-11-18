@@ -143,7 +143,7 @@
       <div class="boxBody">
       <div id="nowBarRow">
         <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
-        <div id="nowBarName"></div>
+        <div id="nowBarName" class="mq"></div>
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div id="nowBarSong" class="mq"></div>
@@ -393,6 +393,7 @@
     if (fitCache[id] === key) return;
     fitCache[id] = key;
     var size = max;
+    el.classList.remove("scroll");
     el.style.fontSize = size + "vh";
     while (size > min && el.scrollWidth > el.clientWidth + 1) {
       size -= 0.5;
@@ -421,7 +422,7 @@
 
   function fitName() {
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 7);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
