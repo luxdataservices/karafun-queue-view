@@ -6,10 +6,6 @@ A free, full-screen "Now Singing / Up Next" display for your KaraFun karaoke que
 
 No accounts, no sign-up, nothing to install. It's one static HTML page.
 
-## Why not Rotato?
-
-Rotato is a good tool, but it's built to *run* your singer rotation: singers cycle back to the bottom of its list, and it doesn't follow along when you advance songs in KaraFun. This project does the opposite. KaraFun stays in charge of the queue, and this page just shows it nicely on a TV.
-
 ## What it shows
 
 - **Now Singing:** appears once you press play. A green box that pulses slowly, with a mic icon and animated sound bars.
