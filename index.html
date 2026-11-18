@@ -66,13 +66,13 @@
   #nowBarSong { font-size: 4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
-  #heroLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
-  #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
+  #heroLabel { font-size: 3.4vh; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
+  #hero { text-align: left; min-height: 25vh; background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 8vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 11vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 4vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
+  #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
@@ -412,7 +412,7 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 8, 4.5);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 5);
     if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 8, 4.5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
