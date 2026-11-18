@@ -424,7 +424,7 @@
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
     if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 7);
   }
-  window.addEventListener("resize", function () { fitCache = {}; fitName(); });
+  window.addEventListener("resize", function () { fitCache = {}; fitName(); marquee(); });
 
   var pillTimer = null;
   function setPill(text, bad) {
