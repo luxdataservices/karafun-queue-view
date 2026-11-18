@@ -33,6 +33,7 @@
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: var(--dim); text-transform: uppercase; }
+  #nowLabel { font-size: 5.5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
   /* Now-singing card: highlighted, with a mic icon. Name starts at 30vh (2x) and
      shrinks to fit long names on one line (see fitName). */
   #now { margin: .6vh 0 2.6vh; display: flex; align-items: center; gap: 2vw;
@@ -40,9 +41,9 @@
     background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border: .4vh solid rgba(252,255,0,.55);
     box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #mic { flex: none; height: 22vh; width: auto; filter: drop-shadow(0 0 1.5vh rgba(252,255,0,.6)); }
+  #mic { flex: none; height: 20vh; width: auto; filter: drop-shadow(0 0 1.5vh rgba(252,255,0,.6)); }
   #nowText { min-width: 0; flex: 1; }
-  #nowName { font-size: 30vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #nowName { font-size: 28vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
   #nowSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
@@ -98,7 +99,7 @@
 <div id="view" class="safe hidden">
   <img id="brand" src="logo.png" alt="">
   <div id="top">
-  <div class="label">Now singing</div>
+  <div class="label" id="nowLabel">Now singing</div>
   <div id="now">
     <svg id="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fcff00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="rgba(252,255,0,.25)"/>
@@ -293,7 +294,7 @@
     var key = el.textContent + "|" + window.innerWidth + "x" + window.innerHeight;
     if (key === lastFit) return;
     lastFit = key;
-    var size = 30;
+    var size = 28;
     el.style.fontSize = size + "vh";
     while (size > 10 && el.scrollWidth > el.clientWidth + 1) {
       size -= 1;
