@@ -38,25 +38,25 @@
   /* Now singing bar: only while a song is playing. Smaller, green. */
   /* Slow pulse so the current singer "flashes" gently. Opacity only: cheap on a Fire Stick. */
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 1.6vh;
+  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 1.6vh; text-align: center;
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBarHead { display: flex; align-items: center; gap: 1.2vw; }
-  #nowBar .mic { flex: none; height: 7vh; width: auto; }
+  #nowBarHead { display: flex; align-items: center; justify-content: center; gap: 1vw; }
+  #nowBar .mic { flex: none; height: 5vh; width: auto; }
   #nowBar .mic.flip { transform: scaleX(-1); }
   /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
-  .wave { flex: none; display: flex; align-items: center; gap: .6vh; height: 6vh; }
-  .wave i { display: block; width: 1.2vh; height: 100%; border-radius: 1vh; background: #39ff88;
+  .wave { flex: none; display: flex; align-items: center; gap: .5vh; height: 4.5vh; }
+  .wave i { display: block; width: .9vh; height: 100%; border-radius: 1vh; background: #39ff88;
     transform-origin: center; animation: eq 1s ease-in-out infinite; }
   .wave i:nth-child(2) { animation-delay: -.2s; } .wave i:nth-child(3) { animation-delay: -.5s; }
   .wave i:nth-child(4) { animation-delay: -.8s; } .wave i:nth-child(5) { animation-delay: -.35s; }
   .wave i:nth-child(6) { animation-delay: -.65s; } .wave i:nth-child(7) { animation-delay: -.1s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
-  #nowBarLabel { font-size: 4vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { font-size: 15vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarLabel { font-size: 3.2vh; font-weight: 800; letter-spacing: .28em; }
+  #nowBarName { font-size: 7vh; font-weight: 800; line-height: 1.1; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 10vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
@@ -74,10 +74,11 @@
   #list { flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
-  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.6vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
+  .row { min-width: 0; display: flex; align-items: center; gap: 1.4vw; padding: .8vh 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; flex: 0 1 auto; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cell { min-width: 0; flex: 1; }
+  .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
@@ -130,8 +131,8 @@
         <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
       </div>
-      <div id="nowBarName"></div>
       <div id="nowBarSong"></div>
+      <div id="nowBarName"></div>
     </div>
     <div id="heroWrap">
       <div id="heroLabel">UP NEXT</div>
@@ -310,8 +311,10 @@
     $("nowBar").classList.toggle("hidden", !singing);
     if (singing) {
       var n = line(info(cur));
-      $("nowBarName").textContent = n.big;
-      $("nowBarSong").textContent = n.small;
+      // Song title on top, singer underneath (artist if no singer was entered).
+      var ni = info(cur);
+      $("nowBarSong").textContent = ni.title;
+      $("nowBarName").textContent = ni.singer || ni.artist;
     }
     setTimeout(fitName, 0);
 
@@ -336,7 +339,7 @@
     listItems.slice(0, maxRows).forEach(function (it, i) {
       var l = line(info(it));
       html += '<div class="row"><span class="num">' + (i + 2) +
-        '</span><span class="who">' + esc(l.big) + '</span><span class="what">' + esc(l.small) + "</span></div>";
+        '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what">' + esc(l.small) + "</div></div></div>";
     });
     $("list").innerHTML = html;
     $("more").textContent = listItems.length > maxRows ? "+ " + (listItems.length - maxRows) + " more" : "";
@@ -358,7 +361,7 @@
   }
   function fitName() {
     if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 6);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 15, 7);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarSong", 10, 5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
