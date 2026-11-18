@@ -363,10 +363,16 @@
     list.classList.toggle("two", two);
     list.style.gridTemplateRows = "repeat(" + rows + ", auto)";
     var html = "";
+    // Names fade from orange (next in line) to red (last in line).
+    function shade(i) {
+      var t = items.length > 1 ? i / (items.length - 1) : 0;
+      var from = [255, 159, 28], to = [255, 48, 48];
+      return "rgb(" + from.map(function (c, k) { return Math.round(c + (to[k] - c) * t); }).join(",") + ")";
+    }
     items.forEach(function (it, i) {
       var l = line(info(it));
       html += '<div class="row"><span class="num">' + (i + 2) +
-        '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
+        '</span><div class="cell"><div class="who" style="color:' + shade(i) + '">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
     });
     list.innerHTML = html;
     $("more").textContent = "";
