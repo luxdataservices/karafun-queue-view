@@ -38,14 +38,15 @@
   /* Now singing bar: only while a song is playing. Smaller, green. */
   /* Slow pulse so the current singer "flashes" gently. Opacity only: cheap on a Fire Stick. */
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-  #nowBar { animation: pulse 2.6s ease-in-out infinite; display: flex; align-items: center; gap: 1.6vw; margin-bottom: 2.4vh;
+  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 2.4vh;
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBar .mic { flex: none; height: 14vh; width: auto; }
+  #nowBarHead { display: flex; align-items: center; gap: 1.2vw; }
+  #nowBar .mic { flex: none; height: 7vh; width: auto; }
   #nowBar .mic.flip { transform: scaleX(-1); }
   /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
-  .wave { flex: none; display: flex; align-items: center; gap: .6vh; height: 12vh; }
+  .wave { flex: none; display: flex; align-items: center; gap: .6vh; height: 6vh; }
   .wave i { display: block; width: 1.2vh; height: 100%; border-radius: 1vh; background: #39ff88;
     transform-origin: center; animation: eq 1s ease-in-out infinite; }
   .wave i:nth-child(2) { animation-delay: -.2s; } .wave i:nth-child(3) { animation-delay: -.5s; }
@@ -53,7 +54,7 @@
   .wave i:nth-child(6) { animation-delay: -.65s; } .wave i:nth-child(7) { animation-delay: -.1s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
-  #nowBarLabel { font-size: 3.4vh; font-weight: 800; letter-spacing: .28em; }
+  #nowBarLabel { font-size: 4vh; font-weight: 800; letter-spacing: .28em; }
   #nowBarName { font-size: 15vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -118,15 +119,15 @@
   <img id="brand" src="logo.png" alt="">
   <div id="top">
     <div id="nowBar" class="hidden">
-      <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
-      <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div id="nowBarText">
+      <div id="nowBarHead">
+        <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+        <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div id="nowBarLabel">NOW SINGING</div>
-        <div id="nowBarName"></div>
-        <div id="nowBarSong"></div>
+        <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
       </div>
-      <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+      <div id="nowBarName"></div>
+      <div id="nowBarSong"></div>
     </div>
     <div id="heroWrap">
       <div id="heroLabel">UP NEXT</div>
