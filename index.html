@@ -336,7 +336,7 @@
     }
     $("empty").classList.toggle("hidden", !!cur);
 
-    listState = { items: listItems, perCol: singing ? 4 : 6 };
+    listState = { items: listItems, perCol: singing ? 3 : 6 };
     $("nextWrap").classList.toggle("hidden", listItems.length === 0);
     renderList();
   }
