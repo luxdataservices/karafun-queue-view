@@ -34,7 +34,7 @@
 
   /* ---------- brand logo (top right) ---------- */
   /* Logo in the top-right corner */
-  #brand { position: absolute; top: 0; right: 0; height: 39vh; width: auto; }
+  #brand { position: absolute; top: 0; right: 0; height: 39vh; width: 42vh; object-fit: contain; object-position: top right; }
   #top { padding-right: 46vh; } /* keep names clear of the logo */
 
   /* ---------- queue view ---------- */
@@ -201,6 +201,43 @@
   // nobody types one). Set with ?blank=Name1,Name2 ; saved on this device.
   if (params.has("blank")) save(BLANK_KEY, params.get("blank"));
   var blankNames = (load(BLANK_KEY) || "").split(",").map(function (n) { return n.trim().toLowerCase(); }).filter(Boolean);
+
+  // ---------------------------------------------------------------- look & feel (from the link)
+  // Any venue can brand the display through the link. Anything left out uses The Jukebox defaults.
+  //   logo=<https URL of an image>  (logo=none hides it)
+  //   bg1=<hex>&bg2=<hex>           background fade, top-left to bottom-right
+  //   up1=<hex>&up2=<hex>           Coming Up names, first to last in line
+  // Colors are hex without the "#", e.g. bg1=1c0870. Settings are remembered on this device.
+  var CFG_KEY = "kfqv.cfg";
+  var cfg = {};
+  try { cfg = JSON.parse(load(CFG_KEY) || "{}") || {}; } catch (e) { cfg = {}; }
+  ["logo", "bg1", "bg2", "up1", "up2"].forEach(function (k) { if (params.has(k)) cfg[k] = params.get(k); });
+  if (params.has("reset")) cfg = {};
+  save(CFG_KEY, JSON.stringify(cfg));
+  function hex(v) {
+    v = String(v || "").replace(/^#/, "").trim();
+    if (!/^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) return null;
+    if (v.length === 3) v = v.replace(/(.)/g, "$1$1");
+    return v.toLowerCase();
+  }
+  function rgb(h) { return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
+  var comingFrom = rgb(hex(cfg.up1) || "ff9f1c");
+  var comingTo = rgb(hex(cfg.up2) || "ff3030");
+  function applyLook() {
+    var b1 = hex(cfg.bg1), b2 = hex(cfg.bg2);
+    if (b1 || b2) {
+      var bg = "#" + (b1 || "1c0870") + " linear-gradient(135deg, #" + (b1 || "1c0870") + " 0%, #" + (b2 || b1 || "5e1c95") + " 100%)";
+      document.documentElement.style.background = bg;
+      document.body.style.background = bg;
+    }
+    var img = $("brand");
+    var logo = String(cfg.logo || "").trim();
+    if (logo.toLowerCase() === "none") { img.classList.add("hidden"); }
+    else if (/^https?:\/\//i.test(logo)) {
+      img.onerror = function () { img.classList.add("hidden"); };
+      img.src = logo;
+    }
+  }
   var client = null;
   var session = null;           // { kcsUrl, hash }
   var queue = [];               // raw KaraFun queue items
@@ -365,7 +402,7 @@
     // Names fade from orange (next in line) to red (last in line).
     function shade(i) {
       var t = all.length > 1 ? i / (all.length - 1) : 0;
-      var from = [255, 159, 28], to = [255, 48, 48];
+      var from = comingFrom, to = comingTo;
       return "rgb(" + from.map(function (c, k) { return Math.round(c + (to[k] - c) * t); }).join(",") + ")";
     }
     items.forEach(function (it, i) {
@@ -585,6 +622,7 @@
   setInterval(function () { if (window.scrollY < 290) hideSilkBar(); }, 5000);
 
   // ---------------------------------------------------------------- start
+  applyLook();
   if (params.has("code")) save(STORE_KEY, code);
   if (params.has("reset")) { save(STORE_KEY, null); code = ""; }
   if (/^\d{6}$/.test(code)) showView(); else showSetup();

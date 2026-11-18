@@ -17,6 +17,24 @@ URL options:
 
 Fire TV tip: set **Settings → Display & Sounds → Screensaver → Start Time → Never** so the screensaver doesn't cover the queue.
 
+## Make it your own
+
+Everything is set in the link, so there's nothing to sign up for. Add any of these to the end of the URL (anything you leave out uses The Jukebox's look):
+
+| Option | What it does | Example |
+|---|---|---|
+| `code` | Your KaraFun remote control code | `code=123456` |
+| `logo` | Direct link to your logo image (a transparent PNG looks best). `logo=none` hides it | `logo=https://example.com/logo.png` |
+| `bg1`, `bg2` | Background fade colors, top-left to bottom-right | `bg1=0b3d2e&bg2=1f7a5a` |
+| `up1`, `up2` | Coming Up name colors, from next in line to last | `up1=00e5ff&up2=0055ff` |
+| `blank` | A singer name to treat as "no name" | `blank=Guest` |
+
+Colors are hex codes without the `#`. Example:
+
+`https://luxdataservices.github.io/karafun-queue-view/?code=123456&logo=https://example.com/logo.png&bg1=0b3d2e&bg2=1f7a5a`
+
+The settings are remembered on that device. `?reset` clears them.
+
 ## Deploy
 
 Import this repo into Vercel as a project (framework preset: **Other**, no build command). Every push to `main` redeploys.
