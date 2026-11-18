@@ -96,7 +96,8 @@
   .mq { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; transition: opacity .35s; }
   .mq.fade { opacity: 0; }
   .what { min-width: 0; flex: 1; font-size: calc(var(--s) * 3.2vh); font-weight: 600; color: rgba(255,255,255,.42); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
+  #more { flex: none; font-size: 2.4vh; color: rgba(255,255,255,.5); margin-top: .8vh; text-align: right;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
     border-radius: 99px; background: rgba(255,255,255,.08); color: var(--dim); }
@@ -354,16 +355,18 @@
   // a handful of people, and the text shrinks as needed so the whole list fits.
   var listState = { items: [], perCol: 5 };
   function renderList() {
-    var items = listState.items;
+    var all = listState.items;
+    var items = all.slice(0, 6);         // next six get the big treatment
+    var extra = all.slice(6);            // everyone after that: small list in the corner
     var list = $("list");
-    var two = items.length > 5;
-    var rows = two ? Math.ceil(items.length / 2) : Math.max(items.length, 1);
+    var two = items.length > 3;
+    var rows = two ? 3 : Math.max(items.length, 1);
     list.classList.toggle("two", two);
     list.style.gridTemplateRows = "repeat(" + rows + ", auto)";
     var html = "";
     // Names fade from orange (next in line) to red (last in line).
     function shade(i) {
-      var t = items.length > 1 ? i / (items.length - 1) : 0;
+      var t = all.length > 1 ? i / (all.length - 1) : 0;
       var from = [255, 159, 28], to = [255, 48, 48];
       return "rgb(" + from.map(function (c, k) { return Math.round(c + (to[k] - c) * t); }).join(",") + ")";
     }
@@ -373,7 +376,9 @@
         '</span><div class="cell"><div class="who" style="color:' + shade(i) + '">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
     });
     list.innerHTML = html;
-    $("more").textContent = "";
+    $("more").textContent = extra.length
+      ? "Also signed up (" + extra.length + "): " + extra.map(function (it) { return line(info(it)).big; }).join(", ")
+      : "";
     // Shrink until it fits (floor at 40% of normal size).
     var sc = 1;
     list.style.setProperty("--s", sc);
