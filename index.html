@@ -43,28 +43,28 @@
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBar svg { flex: none; height: 10vh; width: auto; }
+  #nowBar svg { flex: none; height: 14vh; width: auto; }
   #nowBarText { min-width: 0; flex: 1; }
-  #nowBarLabel { font-size: 2.8vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { font-size: 9vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 3vh; color: #fff; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarLabel { font-size: 3.4vh; font-weight: 800; letter-spacing: .28em; }
+  #nowBarName { font-size: 13vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
   #hero { margin: .6vh 0 2.4vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
     background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border: .4vh solid rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 22vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 14vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 4vh; color: var(--fg); opacity: .9; margin-top: .6vh;
+  #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #list { flex: 1; overflow: hidden; margin-top: 1vh; }
   .row { display: flex; align-items: baseline; gap: 2.2vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
   .who { font-size: 6vh; font-weight: 800; color: #ff9f1c; flex: 0 1 62%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .what { font-size: 3vh; color: var(--dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .what { font-size: 3.8vh; font-weight: 700; color: rgba(255,255,255,.85); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: 1.2vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
@@ -326,9 +326,9 @@
     var key = el.textContent + "|" + window.innerWidth + "x" + window.innerHeight;
     if (key === lastFit) return;
     lastFit = key;
-    var size = 22;
+    var size = 14;
     el.style.fontSize = size + "vh";
-    while (size > 10 && el.scrollWidth > el.clientWidth + 1) {
+    while (size > 7 && el.scrollWidth > el.clientWidth + 1) {
       size -= 1;
       el.style.fontSize = size + "vh";
     }
