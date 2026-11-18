@@ -28,10 +28,9 @@
   .hidden { display: none !important; }
 
   /* ---------- brand logo (top right) ---------- */
-  /* Full-screen faded logo behind everything */
-  #bgLogo { position: fixed; left: 50%; top: 50%; height: 96vh; width: auto;
-    transform: translate(-50%, -50%); opacity: .4; pointer-events: none; z-index: 0; }
-  .safe { z-index: 1; }
+  /* Logo in the top-right corner */
+  #brand { position: absolute; top: 0; right: 0; height: 39vh; width: auto; }
+  #top { padding-right: 42vh; } /* keep names clear of the logo */
 
   /* ---------- queue view ---------- */
   .label { font-size: 2.8vh; letter-spacing: .32em; color: #ffc27a; text-transform: uppercase; }
@@ -43,10 +42,19 @@
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
-  #nowBar svg { flex: none; height: 14vh; width: auto; }
+  #nowBar .mic { flex: none; height: 14vh; width: auto; }
+  #nowBar .mic.flip { transform: scaleX(-1); }
+  /* Animated equalizer bars: transform-only animation, light on the Fire Stick */
+  .wave { flex: none; display: flex; align-items: center; gap: .6vh; height: 12vh; }
+  .wave i { display: block; width: 1.2vh; height: 100%; border-radius: 1vh; background: #39ff88;
+    transform-origin: center; animation: eq 1s ease-in-out infinite; }
+  .wave i:nth-child(2) { animation-delay: -.2s; } .wave i:nth-child(3) { animation-delay: -.5s; }
+  .wave i:nth-child(4) { animation-delay: -.8s; } .wave i:nth-child(5) { animation-delay: -.35s; }
+  .wave i:nth-child(6) { animation-delay: -.65s; } .wave i:nth-child(7) { animation-delay: -.1s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { font-size: 3.4vh; font-weight: 800; letter-spacing: .28em; }
-  #nowBarName { font-size: 13vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { font-size: 15vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #nowBarSong { font-size: 4.6vh; font-weight: 700; color: #fff; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
@@ -54,7 +62,7 @@
   #hero { margin: .6vh 0 2.4vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
     background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border: .4vh solid rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 14vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 11vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
   #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
@@ -95,7 +103,6 @@
 </style>
 </head>
 <body>
-<img id="bgLogo" src="logo-bg.png" alt="">
 
 <!-- Code entry: shown until a KaraFun remote code is saved on this device -->
 <div id="setup" class="safe hidden">
@@ -108,14 +115,18 @@
 
 <!-- Queue display -->
 <div id="view" class="safe hidden">
+  <img id="brand" src="logo.png" alt="">
   <div id="top">
     <div id="nowBar" class="hidden">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+      <svg class="mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
+      <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div id="nowBarText">
         <div id="nowBarLabel">NOW SINGING</div>
         <div id="nowBarName"></div>
         <div id="nowBarSong"></div>
       </div>
+      <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <svg class="mic flip" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2" width="7" height="12" rx="3.5" fill="currentColor" fill-opacity=".25"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8.5 22h7"/></svg>
     </div>
     <div id="heroWrap">
       <div id="heroLabel">UP NEXT</div>
@@ -297,6 +308,7 @@
       $("nowBarName").textContent = n.big;
       $("nowBarSong").textContent = n.small;
     }
+    setTimeout(fitName, 0);
 
     $("heroWrap").classList.toggle("hidden", !heroItem);
     if (heroItem) {
@@ -319,21 +331,25 @@
     $("more").textContent = listItems.length > maxRows ? "+ " + (listItems.length - maxRows) + " more" : "";
   }
 
-  // Start the singer's name at full size and step it down until it fits on one line.
-  var lastFit = "";
-  function fitName() {
-    var el = $("heroName");
+  // Start each big name at full size and step it down until it fits on one line.
+  var fitCache = {};
+  function fitOne(id, max, min) {
+    var el = $(id);
     var key = el.textContent + "|" + window.innerWidth + "x" + window.innerHeight;
-    if (key === lastFit) return;
-    lastFit = key;
-    var size = 14;
+    if (fitCache[id] === key) return;
+    fitCache[id] = key;
+    var size = max;
     el.style.fontSize = size + "vh";
-    while (size > 7 && el.scrollWidth > el.clientWidth + 1) {
-      size -= 1;
+    while (size > min && el.scrollWidth > el.clientWidth + 1) {
+      size -= 0.5;
       el.style.fontSize = size + "vh";
     }
   }
-  window.addEventListener("resize", function () { lastFit = ""; fitName(); });
+  function fitName() {
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 11, 6);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 15, 7);
+  }
+  window.addEventListener("resize", function () { fitCache = {}; fitName(); });
 
   var pillTimer = null;
   function setPill(text, bad) {
