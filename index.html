@@ -55,7 +55,7 @@
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { font-size: 2.6vh; font-weight: 800; letter-spacing: .28em; }
   #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 7.5vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 3.6vh; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 4.6vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
@@ -313,8 +313,10 @@
     $("nowBar").classList.toggle("hidden", !singing);
     if (singing) {
       var n = line(info(cur));
-      $("nowBarName").textContent = n.big;
-      $("nowBarSong").textContent = n.small;
+      // Song title on the big line (with the mic and VU bars), singer underneath.
+      var ni = info(cur);
+      $("nowBarName").textContent = ni.title;
+      $("nowBarSong").textContent = ni.singer ? ni.singer : ni.artist;
     }
     setTimeout(function () { fitName(); marquee(); }, 0);
 
