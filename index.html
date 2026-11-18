@@ -45,10 +45,10 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   /* Now Singing and Up Next share the same box size */
   /* Now Singing and Up Next: same size; big label on the left, name + song on the right */
-  #nowBar, #hero { box-sizing: border-box; min-height: 14vh; margin: 0 0 1.4vh; padding: 1vh 2vw;
+  #nowBar, #hero { box-sizing: border-box; min-height: 18vh; margin: 0 0 1.4vh; padding: 1.2vh 2vw;
     border-radius: 2.4vh; border: .4vh solid; text-align: left;
     display: flex; flex-direction: row; align-items: center; gap: 2.4vw; }
-  .boxLabel { flex: none; min-width: 13vw; font-size: 4.4vh; font-weight: 900; line-height: 1.05;
+  .boxLabel { flex: none; min-width: 15vw; font-size: 5.4vh; font-weight: 900; line-height: 1.05;
     letter-spacing: .04em; padding-right: 2vw; border-right: .3vh solid rgba(57,255,136,.45); }
   .boxBody { min-width: 0; flex: 1; }
   #nowBar { animation: pulse 2.6s ease-in-out infinite; color: #39ff88;
@@ -66,17 +66,17 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 7vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 3.4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 9vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 4.2vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { color: var(--accent); border-color: rgba(252,255,0,.45); }
   #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 7vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 9vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 3.4vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
+  #heroSong { font-size: 4.2vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
@@ -414,8 +414,8 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 7, 4.5);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 7, 5.5);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 6.5);
   }
   window.addEventListener("resize", function () { fitCache = {}; fitName(); renderList(); });
 
