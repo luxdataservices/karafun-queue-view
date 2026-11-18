@@ -331,10 +331,9 @@
     $("nowBar").classList.toggle("hidden", !singing);
     if (singing) {
       var n = line(info(cur));
-      // Song title on the big line (with the mic and VU bars), singer underneath.
-      var ni = info(cur);
-      $("nowBarName").textContent = ni.title;
-      $("nowBarSong").textContent = ni.singer ? ni.singer : ni.artist;
+      // Singer on the big line (with the mic and VU bars), song underneath.
+      $("nowBarName").textContent = n.big;
+      $("nowBarSong").textContent = n.small;
     }
     setTimeout(function () { fitName(); marquee(); }, 0);
 
