@@ -45,10 +45,10 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   /* Now Singing and Up Next share the same box size */
   /* Now Singing and Up Next: same size; big label on the left, name + song on the right */
-  #nowBar, #hero { box-sizing: border-box; min-height: 19vh; margin: 0 0 1.6vh; padding: 1.4vh 2vw;
+  #nowBar, #hero { box-sizing: border-box; min-height: 14vh; margin: 0 0 1.4vh; padding: 1vh 2vw;
     border-radius: 2.4vh; border: .4vh solid; text-align: left;
     display: flex; flex-direction: row; align-items: center; gap: 2.4vw; }
-  .boxLabel { flex: none; min-width: 16vw; font-size: 5.6vh; font-weight: 900; line-height: 1.05;
+  .boxLabel { flex: none; min-width: 13vw; font-size: 4.4vh; font-weight: 900; line-height: 1.05;
     letter-spacing: .04em; padding-right: 2vw; border-right: .3vh solid rgba(57,255,136,.45); }
   .boxBody { min-width: 0; flex: 1; }
   #nowBar { animation: pulse 2.6s ease-in-out infinite; color: #39ff88;
@@ -66,34 +66,35 @@
   @keyframes eq { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(1); } }
   #nowBarText { min-width: 0; flex: 1; }
   #nowBarLabel { }
-  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 9vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #nowBarSong { font-size: 4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarName { min-width: 0; flex: 0 1 auto; font-size: 7vh; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #nowBarSong { font-size: 3.4vh; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { color: var(--accent); border-color: rgba(252,255,0,.45); }
   #hero { background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border-color: rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
-  #heroName { font-size: 9vh; font-weight: 800; line-height: 1; color: var(--accent);
+  #heroName { font-size: 7vh; font-weight: 800; line-height: 1; color: var(--accent);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 0 3vh rgba(252,255,0,.35); }
-  #heroSong { font-size: 4.6vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
+  #heroSong { font-size: 3.4vh; font-weight: 700; color: var(--fg); opacity: .95; margin-top: .6vh;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #empty { font-size: 8vh; color: var(--dim); margin: 2vh 0 4vh; }
   #nextLabel { font-size: 4vh; font-weight: 800; letter-spacing: .24em; color: #ffc27a; }
   /* Coming up: fills the first column, then a second column, side by side */
-  #list { transition: opacity .4s; flex: 1; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
+  #nextWrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #list { --s: 1; flex: 1; min-height: 0; overflow: hidden; margin-top: 1vh; display: grid; grid-auto-flow: column;
     grid-template-columns: 1fr; column-gap: 4vw; align-content: start; }
   #list.two { grid-template-columns: 1fr 1fr; }
-  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: .7vh 0; border-bottom: 1px solid var(--line); }
-  .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 6.2vh; font-weight: 800; color: #ff9f1c; line-height: 1.1; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row { min-width: 0; display: flex; align-items: baseline; gap: 1.2vw; padding: calc(var(--s) * .7vh) 0; border-bottom: 1px solid var(--line); }
+  .num { width: 4vw; font-size: calc(var(--s) * 3.6vh); color: var(--dim); text-align: right; flex: none; }
+  .who { font-size: calc(var(--s) * 6.2vh); font-weight: 800; color: #ff9f1c; line-height: 1.1; flex: 0 1 auto; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 1.2vw; }
   /* Text too long for its space slides slowly back and forth so the whole title can be read */
   .mq { overflow: hidden; white-space: nowrap; text-overflow: clip !important; }
   .mq > span { display: inline-block; }
   .mq.scroll > span { animation: mq var(--t, 8s) ease-in-out infinite alternate; }
   @keyframes mq { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--d)); } }
-  .what { min-width: 0; flex: 1; font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .what { min-width: 0; flex: 1; font-size: calc(var(--s) * 3.2vh); font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
@@ -349,41 +350,33 @@
     renderList();
   }
 
-  // Coming Up: rows per column; a second column opens once the first is full.
-  // When more people are waiting than fit, it pages through them every few seconds.
-  var PAGE_MS = 8000;
+  // Coming Up: everyone waiting is shown at once. It splits into two columns past
+  // a handful of people, and the text shrinks as needed so the whole list fits.
   var listState = { items: [], perCol: 5 };
-  var page = 0;
   function renderList() {
-    var items = listState.items, perCol = listState.perCol;
-    var maxRows = perCol * 2;
-    var pages = Math.max(1, Math.ceil(items.length / maxRows));
-    if (page >= pages) page = 0;
-    var start = page * maxRows;
-    var slice = items.slice(start, start + maxRows);
+    var items = listState.items;
     var list = $("list");
-    list.classList.toggle("two", slice.length > perCol || pages > 1);
-    list.style.gridTemplateRows = "repeat(" + Math.min(Math.max(slice.length, 1), perCol) + ", auto)";
-    if (pages > 1) list.style.gridTemplateRows = "repeat(" + perCol + ", auto)";
+    var two = items.length > 5;
+    var rows = two ? Math.ceil(items.length / 2) : Math.max(items.length, 1);
+    list.classList.toggle("two", two);
+    list.style.gridTemplateRows = "repeat(" + rows + ", auto)";
     var html = "";
-    slice.forEach(function (it, i) {
+    items.forEach(function (it, i) {
       var l = line(info(it));
-      html += '<div class="row"><span class="num">' + (start + i + 2) +
+      html += '<div class="row"><span class="num">' + (i + 2) +
         '</span><div class="cell"><div class="who">' + esc(l.big) + '</div><div class="what mq">' + esc(l.small) + "</div></div></div>";
     });
     list.innerHTML = html;
-    $("more").textContent = pages > 1
-      ? "Page " + (page + 1) + " of " + pages + "  ·  " + items.length + " singers waiting"
-      : "";
+    $("more").textContent = "";
+    // Shrink until it fits (floor at 40% of normal size).
+    var sc = 1;
+    list.style.setProperty("--s", sc);
+    while (sc > 0.4 && list.scrollHeight > list.clientHeight + 1) {
+      sc -= 0.05;
+      list.style.setProperty("--s", sc.toFixed(2));
+    }
     setTimeout(marquee, 0);
   }
-  setInterval(function () {
-    var maxRows = listState.perCol * 2;
-    if (listState.items.length <= maxRows) { page = 0; return; }
-    var list = $("list");
-    list.style.opacity = "0";
-    setTimeout(function () { page++; renderList(); list.style.opacity = "1"; }, 400);
-  }, PAGE_MS);
 
   // Start each big name at full size and step it down until it fits on one line.
   var fitCache = {};
@@ -421,10 +414,10 @@
   }
 
   function fitName() {
-    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 9, 5);
-    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 9, 7);
+    if (!$("heroWrap").classList.contains("hidden")) fitOne("heroName", 7, 4.5);
+    if (!$("nowBar").classList.contains("hidden")) fitOne("nowBarName", 7, 5.5);
   }
-  window.addEventListener("resize", function () { fitCache = {}; fitName(); marquee(); });
+  window.addEventListener("resize", function () { fitCache = {}; fitName(); renderList(); });
 
   var pillTimer = null;
   function setPill(text, bad) {
