@@ -38,7 +38,7 @@
   /* Now singing bar: only while a song is playing. Smaller, green. */
   /* Slow pulse so the current singer "flashes" gently. Opacity only: cheap on a Fire Stick. */
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 2.4vh;
+  #nowBar { animation: pulse 2.6s ease-in-out infinite; margin-bottom: 1.6vh;
     padding: 1.2vh 1.6vw; border-radius: 2vh; color: #39ff88;
     background: rgba(57,255,136,.12); border: .35vh solid rgba(57,255,136,.6);
     box-shadow: 0 0 3vh rgba(57,255,136,.25); }
@@ -60,7 +60,7 @@
 
   /* Hero: the singer who goes next, big and yellow. Name shrinks to fit (see fitName). */
   #heroLabel { font-size: 5vh; font-weight: 800; letter-spacing: .2em; color: var(--accent); }
-  #hero { margin: .6vh 0 2.4vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
+  #hero { margin: .4vh 0 1.6vh; padding: 1.4vh 2vw; border-radius: 2.4vh;
     background: linear-gradient(90deg, rgba(252,255,0,.16), rgba(252,255,0,.04));
     border: .4vh solid rgba(252,255,0,.55); box-shadow: 0 0 4vh rgba(252,255,0,.25); }
   #heroName { font-size: 11vh; font-weight: 800; line-height: 1; color: var(--accent);
@@ -76,9 +76,9 @@
   #list.two { grid-template-columns: 1fr 1fr; }
   .row { min-width: 0; display: flex; align-items: baseline; gap: 1.6vw; padding: .9vh 0; border-bottom: 1px solid var(--line); }
   .num { width: 4vw; font-size: 3.6vh; color: var(--dim); text-align: right; flex: none; }
-  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; flex: 0 1 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .who { font-size: 5vh; font-weight: 800; color: #ff9f1c; flex: 0 1 auto; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .what { font-size: 3.2vh; font-weight: 700; color: rgba(255,255,255,.85); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
-  #more { font-size: 3.2vh; color: var(--dim); margin-top: 1.2vh; }
+  #more { font-size: 3.2vh; color: var(--dim); margin-top: .6vh; }
 
   #pill { position: absolute; right: 5vw; bottom: 3vh; font-size: 2.8vh; padding: .6vh 1.2vw;
     border-radius: 99px; background: rgba(255,255,255,.08); color: var(--dim); }
